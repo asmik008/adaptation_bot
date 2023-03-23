@@ -70,41 +70,41 @@ def goodbye():
     idsf.close()
 @dp.message(CommandStart())
 async def process_start_command(message: Message):
-
-    userid=message.from_user.id
-    docs[userid] = []
-    print(ids)
-    print(str(userid))
-    print()
-    if not(str(userid) in ids):
+    if not(str(message.from_user.id) in ids):
         idsf = open("ids.txt", "a")
-        idsf.write(str(userid)+' '+os.getcwd()+"\\Menu"+'\n')
+        idsf.write(str(message.from_user.id)+' '+os.getcwd()+"/Menu"+'\n')
         idsf.close()
-    ids[userid] = os.getcwd()+"\\Menu"
-    imgs[userid]=[]
-    keyboardq[userid]=[[]]
-    text_ans[userid]="Not Defined"
-    imgs[userid]=[]
+    ids[message.from_user.id] = os.getcwd()+"/Menu"
+    keyboardq[message.from_user.id]=[]
+    text_ans[message.from_user.id]="Not Defined"
+    imgs[message.from_user.id] = []
+    inlkeyboardq[message.from_user.id]=[]
+    docs[message.from_user.id]=[]
+    for i in list(os.listdir(ids[message.from_user.id])):
+        print(ids[message.from_user.id] + "/" + i)
 
-    counter[userid] = 0
-    for i in list(os.listdir(ids[userid])):
-
-        print(os.path.isdir(ids[userid] + "\\" + i))
-        if (os.path.isdir(ids[userid] + "\\" + i)):
+        if (os.path.isdir(ids[message.from_user.id] + "/" + i)):
             but = KeyboardButton(text=i)
-            print("!!!!!!!")
-            keyboardq[userid][0].append(but)
+            keyboardq[message.from_user.id].append(but)
 
             main_keyboard[message.from_user.id]: ReplyKeyboardMarkup = ReplyKeyboardMarkup(
-                keyboard=keyboardq[message.from_user.id],resize_keyboard=True)
+                keyboard=[keyboardq[message.from_user.id]],resize_keyboard=True)
         elif i == "Ответ.txt":
-            file[message.from_user.id] = open(ids[message.from_user.id] + "\\" + i, encoding="utf-8")
+            file[message.from_user.id] = open(ids[message.from_user.id] + "/" + i,encoding="utf-8")
             text_ans[message.from_user.id] = file[message.from_user.id].read()
-        elif img_res.count(i[-4:])>0:
+        elif img_res.count(i[-4:]) > 0:
             print("!")
-            temp=ids[message.from_user.id] + "\\" + i
+            temp = ids[message.from_user.id] + "/" + i
             photo = FSInputFile(temp)
             imgs[message.from_user.id].append(photo)
+        else :
+            temp = ids[message.from_user.id] + "/" + i
+            doc = FSInputFile(temp)
+            docs[message.from_user.id].append(doc)
+            print("doc added")
+            print(len(docs[message.from_user.id]))
+
+
 
     if len(imgs[message.from_user.id]) != 0:
 
@@ -114,7 +114,7 @@ async def process_start_command(message: Message):
             await message.answer_photo(photo=j, caption="",
                                        reply_markup=main_keyboard[message.from_user.id], protect_content=True)
         imgs.pop(message.from_user.id, None)
-    if len(docs[message.from_user.id]) != 0:
+    if len(docs[message.from_user.id])!= 0:
         print('see docs!')
         for j in docs[message.from_user.id]:
             await message.answer_document(document=j)
@@ -122,10 +122,9 @@ async def process_start_command(message: Message):
     but = KeyboardButton(text="В начало")
     keyboardq[message.from_user.id].append(but)
     main_keyboard[message.from_user.id]: ReplyKeyboardMarkup = ReplyKeyboardMarkup(
-        keyboard=[keyboardq[message.from_user.id]], resize_keyboard=True)
+            keyboard=[keyboardq[message.from_user.id]], resize_keyboard=True)
     await message.answer(text_ans[message.from_user.id],
                          reply_markup=main_keyboard[message.from_user.id], parse_mode="HTML", protect_content=True)
-
 
 
 @dp.message(lambda msg: msg.text[:5] == '/rass')
@@ -143,33 +142,33 @@ async def process_rass_command(message: Message):
 async def process_start_command1(message: Message):
     if not(str(message.from_user.id) in ids):
         idsf = open("ids.txt", "a")
-        idsf.write(str(message.from_user.id)+' '+os.getcwd()+"\\Menu"+'\n')
+        idsf.write(str(message.from_user.id)+' '+os.getcwd()+"/Menu"+'\n')
         idsf.close()
-    ids[message.from_user.id] = os.getcwd()+"\\Menu"
+    ids[message.from_user.id] = os.getcwd()+"/Menu"
     keyboardq[message.from_user.id]=[]
     text_ans[message.from_user.id]="Not Defined"
     imgs[message.from_user.id] = []
     inlkeyboardq[message.from_user.id]=[]
     docs[message.from_user.id]=[]
     for i in list(os.listdir(ids[message.from_user.id])):
-        print(ids[message.from_user.id] + "\\" + i)
+        print(ids[message.from_user.id] + "/" + i)
 
-        if (os.path.isdir(ids[message.from_user.id] + "\\" + i)):
+        if (os.path.isdir(ids[message.from_user.id] + "/" + i)):
             but = KeyboardButton(text=i)
             keyboardq[message.from_user.id].append(but)
 
             main_keyboard[message.from_user.id]: ReplyKeyboardMarkup = ReplyKeyboardMarkup(
                 keyboard=[keyboardq[message.from_user.id]],resize_keyboard=True)
         elif i == "Ответ.txt":
-            file[message.from_user.id] = open(ids[message.from_user.id] + "\\" + i,encoding="utf-8")
+            file[message.from_user.id] = open(ids[message.from_user.id] + "/" + i,encoding="utf-8")
             text_ans[message.from_user.id] = file[message.from_user.id].read()
         elif img_res.count(i[-4:]) > 0:
             print("!")
-            temp = ids[message.from_user.id] + "\\" + i
+            temp = ids[message.from_user.id] + "/" + i
             photo = FSInputFile(temp)
             imgs[message.from_user.id].append(photo)
         else :
-            temp = ids[message.from_user.id] + "\\" + i
+            temp = ids[message.from_user.id] + "/" + i
             doc = FSInputFile(temp)
             docs[message.from_user.id].append(doc)
             print("doc added")
@@ -208,14 +207,14 @@ async def send_echo(message: Message):
         if not (str(message.from_user.id) in ids):
             idsf = open("ids.txt", "a")
             idsf.write(
-                str(message.from_user.id) + ' ' + ids[message.from_user.id]+"\\"+message.text + '\n')
+                str(message.from_user.id) + ' ' + ids[message.from_user.id]+"/"+message.text + '\n')
             idsf.close()
-        ids[message.from_user.id]+="\\"+message.text
+        ids[message.from_user.id]+="/"+message.text
         keyboardq[message.from_user.id] = [[]]
         for i in list(os.listdir(ids[message.from_user.id])):
-            print(ids[message.from_user.id]+"\\"+i)
+            print(ids[message.from_user.id]+"/"+i)
             temp=""
-            if (os.path.isdir(ids[message.from_user.id]+"\\"+i)):
+            if (os.path.isdir(ids[message.from_user.id]+"/"+i)):
                 but = KeyboardButton(text=i)
                 if len(keyboardq[message.from_user.id][counter[userid]])<2:
                     keyboardq[message.from_user.id][counter[userid]].append(but)
@@ -225,11 +224,11 @@ async def send_echo(message: Message):
                 main_keyboard[message.from_user.id]: ReplyKeyboardMarkup = ReplyKeyboardMarkup(
                 keyboard=keyboardq[message.from_user.id],resize_keyboard=True)
             elif i=="Ответ.txt":
-                file[message.from_user.id]=open(ids[message.from_user.id]+"\\"+i,encoding='utf-8')
+                file[message.from_user.id]=open(ids[message.from_user.id]+"/"+i,encoding='utf-8')
                 text_ans[message.from_user.id]=file[message.from_user.id].read()
             elif img_res.count(i[-4:]) > 0:
                 print("!")
-                temp = ids[message.from_user.id] + "\\" + i
+                temp = ids[message.from_user.id] + "/" + i
                 photo = FSInputFile(temp)
                 imgs[message.from_user.id].append(photo)
 
